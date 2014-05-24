@@ -7,6 +7,7 @@ from algorithms import shpalg
 from topo import fixed
 #from matplotlib.pyplot import *
 import matplotlib.pyplot as plt
+import numpy as np
 
 ###Function to allocate the created network###
 def allocate(subPhyNet,phyNet):
@@ -68,9 +69,27 @@ for i in range(0,len(numberOfVirtualNodes)):
     exceedingLoad.append(((meanLoadLinks[i]/optimisticMeanLoadLinks[i]) - 1)*100 )
 print (exceedingLoad)
 #plt.hist(b,bins=5, color='red',alpha=0.2,label='vermelhos')
-plt.plot(numberOfVirtualNodes,meanLoadLinks)
-plt.title('Experiment A/1/1213 - Mean load of physical links', fontsize=20,fontweight='bold')
-plt.xlabel('Number     of Virtual Nodes per Virtual Network',fontsize=15)
-plt.ylabel('Mean load of physical links',fontsize=15)
+#plt.plot(numberOfVirtualNodes,meanLoadLinks)
+#plt.title('Experiment A/1/1213 - Mean load of physical links', fontsize=20,fontweight='bold')
+#plt.xlabel('Number     of Virtual Nodes per Virtual Network',fontsize=15)
+#plt.ylabel('Mean load of physical links',fontsize=15)
 #plt.legend()
+plt.show()
+
+plt.close('all')
+
+# Four axes, returned as a 2-d arrayaxarr[0, 0].plot(numberOfVirtualNodes, meanLoadLinks)
+f, axarr = plt.subplots(2, 2)
+axarr[0, 0].plot(numberOfVirtualNodes, meanLoadLinks)
+axarr[0, 0].set_title('Experiment A/1/1213 - Mean load of a link')
+axarr[0, 1].plot(numberOfVirtualNodes, maximumLoadLinks)
+axarr[0, 1].set_title('Experiment A/2/1213 - Maximum load of a link')
+axarr[1, 0].plot(numberOfVirtualNodes, minimumLoadLinks)
+axarr[1, 0].set_title('Experiment A/2/1213 - Minimum load of a link')
+axarr[1, 1].plot(numberOfVirtualNodes, minimumLoadLinks)
+axarr[1, 1].set_title('Experiment A/2/1213 - Number of links not used')
+# Fine-tune figure; hide x ticks for top plots and y ticks for right plots
+plt.setp([a.get_xticklabels() for a in axarr[0, :]], visible=False)
+plt.setp([a.get_yticklabels() for a in axarr[:, 1]], visible=False)
+
 plt.show()
