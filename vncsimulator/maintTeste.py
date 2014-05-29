@@ -18,8 +18,10 @@ def allocate(subPhyNet,phyNet):
 ###Parameters###
 numberOfPhyNodes = 50 
 numberOfVirtualNodes = [3, 4, 5, 6, 7,9,10,12,15]
+#numberOfVirtualNodes = range(3,50)
 #numberOfVirtualNodes = [3, 4, 5, 6, 7]
 numberOfVirtualNetsToBeCreated = 500
+seed(1224)
 
 ###Variables###
 numberOfCreatedVNets = 0
@@ -81,13 +83,13 @@ plt.close('all')
 # Four axes, returned as a 2-d arrayaxarr[0, 0].plot(numberOfVirtualNodes, meanLoadLinks)
 f, axarr = plt.subplots(2, 2)
 axarr[0, 0].plot(numberOfVirtualNodes, meanLoadLinks)
-axarr[0, 0].set_title('Experiment A/1/1213 - Mean load of a link')
+axarr[0, 0].set_title('Experiment A - Mean load of a link')
 axarr[0, 1].plot(numberOfVirtualNodes, maximumLoadLinks)
-axarr[0, 1].set_title('Experiment A/2/1213 - Maximum load of a link')
+axarr[0, 1].set_title('Experiment A - Maximum load of a link')
 axarr[1, 0].plot(numberOfVirtualNodes, minimumLoadLinks)
-axarr[1, 0].set_title('Experiment A/3/1213 - Minimum load of a link')
+axarr[1, 0].set_title('Experiment A - Minimum load of a link')
 axarr[1, 1].plot(numberOfVirtualNodes, unusedLinks)
-axarr[1, 1].set_title('Experiment A/4/1213 - Number of links not used')
+axarr[1, 1].set_title('Experiment A - Number of links not used')
 # Fine-tune figure; hide x ticks for top plots and y ticks for right plots
 #plt.setp([a.get_xticklabels() for a in axarr[0, :]], visible=False)
 #plt.setp([a.get_yticklabels() for a in axarr[:, 1]], visible=False)
