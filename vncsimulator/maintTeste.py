@@ -3,6 +3,9 @@
 ##########
 from igraph import *
 from random import *
+import csv
+
+
 from algorithms import shpalg
 from topo import fixed
 #from matplotlib.pyplot import *
@@ -93,6 +96,18 @@ axarr[1, 1].set_title('Experiment A - Number of links not used')
 # Fine-tune figure; hide x ticks for top plots and y ticks for right plots
 #plt.setp([a.get_xticklabels() for a in axarr[0, :]], visible=False)
 #plt.setp([a.get_yticklabels() for a in axarr[:, 1]], visible=False)
+
+file = open("Experimento.txt", "a")
+lista = [numberOfVirtualNodes,meanLoadLinks,maximumLoadLinks,minimumLoadLinks,unusedLinks]
+
+file.writelines(["Nós", '\t',"metrica1", '\t', "metrica2", '\t',"metrica3", '\t',"metrica4"])
+j = ''
+l = ''
+
+for i in lista:
+    i = str(i) + "\n"
+    j = "\n" + str(j) + i + "\n"
+file.writelines(j)
 
 print(meanLoadLinks)
 print(maximumLoadLinks)
