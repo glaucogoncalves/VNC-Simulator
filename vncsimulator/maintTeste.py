@@ -100,14 +100,17 @@ axarr[1, 1].set_title('Experiment 05/2014 - Number of links not used')
 file = open("Experimento.txt", "a")
 lista = [numberOfVirtualNodes,meanLoadLinks,maximumLoadLinks,minimumLoadLinks,unusedLinks]
 
-file.writelines(["Nós", '\t',"metrica1", '\t', "metrica2", '\t',"metrica3", '\t',"metrica4"])
-j = ''
-l = ''
+file.writelines(['\n','\n',"Nós", '\t',"metrica1", '\t', "metrica2", '\t',"metrica3", '\t',"metrica4",'\n'])
 
-for i in lista:
-    i = str(i) + "\n"
-    j = "\n" + str(j) + i + "\n"
-file.writelines(j)
+aux = ''
+tamanho = len(numberOfVirtualNodes)
+i = 0
+while i < len(numberOfVirtualNodes)-1:
+    aux = aux+ str(numberOfVirtualNodes[i])+'\t'+str(meanLoadLinks[i])+'\t''\t'+str(maximumLoadLinks[i])+ '\t''\t'+str(minimumLoadLinks[i])+'\t''\t'+str(unusedLinks[i])+'\n'
+    i = i+1
+
+print aux
+file.writelines(aux)
 
 print(meanLoadLinks)
 print(maximumLoadLinks)
