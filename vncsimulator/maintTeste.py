@@ -40,9 +40,10 @@ unusedLinks = []
 optimisticMeanLoadLinks = []
 exceedingLoad = []
 
+#1)generate a physical topology
+phyNet = Graph.Erdos_Renyi(numberOfPhyNodes, 0.5)
+    
 for i in numberOfVirtualNodes: 
-    #1)generate a physical topology
-    phyNet = Graph.Erdos_Renyi(numberOfPhyNodes, 0.5)
     #phyNet = fixed.generate()
     numberOfPhyNodes = phyNet.vcount()
     phyNet.vs["name"] = range(0,numberOfPhyNodes)
@@ -64,7 +65,8 @@ for i in numberOfVirtualNodes:
     #Minimum load of physical links
     minimumLoadLinks.append(min(phyNet.es["nvlinks"]))
     #Number of links not used
-    unusedLinks.append(sum([1 for i in phyNet.get_edgelist() if phyNet.es[phyNet.get_eid(i[0],i[1])]["nvlinks"] == 0 ]))
+    soma = sum([1 for i in phyNet.get_edgelist() if phyNet.es[phyNet.get_eid(i[0],i[1])]["nvlinks"] == 0 ])
+    unusedLinks.append((soma/float(phyNet.ecount()))*100)
     
 print (meanLoadLinks)
 for i in numberOfVirtualNodes:
@@ -97,10 +99,10 @@ axarr[1, 1].set_title('Experiment 05/2014 - Number of links not used')
 #plt.setp([a.get_xticklabels() for a in axarr[0, :]], visible=False)
 #plt.setp([a.get_yticklabels() for a in axarr[:, 1]], visible=False)
 
-file = open("Experimento.txt", "a")
+fileExp = open("Experimento.txt", "a")
 lista = [numberOfVirtualNodes,meanLoadLinks,maximumLoadLinks,minimumLoadLinks,unusedLinks]
 
-file.writelines(['\n','\n',"Nós", '\t',"metrica1", '\t', "metrica2", '\t',"metrica3", '\t',"metrica4",'\n'])
+fileExp.writelines(['\n','\n',"Nos", '\t',"metrica1", '\t', "metrica2", '\t',"metrica3", '\t',"metrica4",'\n'])
 
 aux = ''
 tamanho = len(numberOfVirtualNodes)
@@ -110,7 +112,8 @@ while i < len(numberOfVirtualNodes)-1:
     i = i+1
 
 print aux
-file.writelines(aux)
+fileExp.writelines(aux)
+fileExp.close()
 
 print(meanLoadLinks)
 print(maximumLoadLinks)
