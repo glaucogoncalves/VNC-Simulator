@@ -18,6 +18,14 @@ def allocate(subPhyNet,phyNet):
         phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] = phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] + 1
     return phyNet
 
+def deallocate(subPhyNet,phyNet):
+    usedEdges = [(subPhyNet.vs[i[0]]["name"],subPhyNet.vs[i[1]]["name"]) for i in subPhyNet.get_edgelist()]
+    for e in usedEdges:
+        phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] = phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] -1
+    return phyNet
+
+
+
 ###Parameters###
 numberOfPhyNodes = 50 
 numberOfVirtualNodes = [3, 4, 5, 6, 7,9,10,12,15]
@@ -47,7 +55,7 @@ for i in numberOfVirtualNodes:
     #phyNet = fixed.generate()
     numberOfPhyNodes = phyNet.vcount()
     phyNet.vs["name"] = range(0,numberOfPhyNodes)
-    phyNet.es["nvlinks"] = 0
+    phyNet.es["nvlinks"] = deallocate(subPhyNet,phyNet) ## modifiquei essa linha e coloquei a phyNet recebendo a funcao
     #plot(phyNet, edge_label=phyNet.es["nvlinks"])
     
     for numberOfCreatedVNets in range(0,numberOfVirtualNetsToBeCreated):
