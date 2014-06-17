@@ -47,7 +47,7 @@ minimumLoadLinks = []
 unusedLinks = []
 optimisticMeanLoadLinks = []
 exceedingLoad = []
-
+listPhynet = []
 #1)generate a physical topology
 phyNet = Graph.Erdos_Renyi(numberOfPhyNodes, 0.5)
     
@@ -55,7 +55,7 @@ for i in numberOfVirtualNodes:
     #phyNet = fixed.generate()
     numberOfPhyNodes = phyNet.vcount()
     phyNet.vs["name"] = range(0,numberOfPhyNodes)
-    phyNet.es["nvlinks"] = deallocate(subPhyNet,phyNet) ## modifiquei essa linha e coloquei a phyNet recebendo a funcao
+    phyNet.es["nvlinks"] = 0 ## modifiquei essa linha e coloquei a phyNet recebendo a funcao
     #plot(phyNet, edge_label=phyNet.es["nvlinks"])
     
     for numberOfCreatedVNets in range(0,numberOfVirtualNetsToBeCreated):
@@ -64,6 +64,8 @@ for i in numberOfVirtualNodes:
         #3)try to create a network connecting the nodes (the algorithm goes here)
         subPhyNet = shpalg.create(phyNet,listOfNodes)
         phyNet = allocate(subPhyNet,phyNet)
+        listPhynet.append(phyNet)
+
     
 #4)Compute the metrics
     #Mean load of physical links
@@ -75,6 +77,10 @@ for i in numberOfVirtualNodes:
     #Number of links not used
     soma = sum([1 for i in phyNet.get_edgelist() if phyNet.es[phyNet.get_eid(i[0],i[1])]["nvlinks"] == 0 ])
     unusedLinks.append((soma/float(phyNet.ecount()))*100)
+
+phyNet.es["nvlinks"] = deallocate(listPhynet,phyNet) ## modifiquei essa linha e coloquei a phyNet recebendo a funcao
+    
+print listPhynet
     
 print (meanLoadLinks)
 for i in numberOfVirtualNodes:
