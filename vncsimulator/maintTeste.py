@@ -55,7 +55,7 @@ for i in numberOfVirtualNodes:
     #phyNet = fixed.generate()
     numberOfPhyNodes = phyNet.vcount()
     phyNet.vs["name"] = range(0,numberOfPhyNodes)
-    phyNet.es["nvlinks"] = 0
+    #phyNet.es["nvlinks"] = 0
     #plot(phyNet, edge_label=phyNet.es["nvlinks"])
     
     for numberOfCreatedVNets in range(0,numberOfVirtualNetsToBeCreated):
@@ -66,7 +66,11 @@ for i in numberOfVirtualNodes:
         phyNet = allocate(subPhyNet,phyNet)
         listPhynet.append(phyNet)
 
-    
+    for j in listPhynet:
+        print "aqui"
+        phyNet = deallocate(j,phyNet) ## modifiquei essa linha e coloquei a phyNet recebendo a funcao
+        #testando o conteudo da lista.
+               
 #4)Compute the metrics
     #Mean load of physical links
     meanLoadLinks.append(round(sum(phyNet.es["nvlinks"])/float(phyNet.ecount()),3))
@@ -77,10 +81,6 @@ for i in numberOfVirtualNodes:
     #Number of links not used
     soma = sum([1 for i in phyNet.get_edgelist() if phyNet.es[phyNet.get_eid(i[0],i[1])]["nvlinks"] == 0 ])
     unusedLinks.append((soma/float(phyNet.ecount()))*100)
-
-phyNet.es["nvlinks"] = deallocate(listPhynet,phyNet) ## modifiquei essa linha e coloquei a phyNet recebendo a funcao
-#testando o conteudo da lista.
-print listPhynet
     
 print (meanLoadLinks)
 for i in numberOfVirtualNodes:
