@@ -18,7 +18,7 @@ def allocate(subPhyNet,phyNet):
         phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] = phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] + 1
     return phyNet
 
-def deallocate(subPhyNet,phyNet):
+def deallocate(subPhyNet,phyNet1):
     usedEdges = [(subPhyNet.vs[i[0]]["name"],subPhyNet.vs[i[1]]["name"]) for i in subPhyNet.get_edgelist()]
     for e in usedEdges:
         phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] = phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] -1
@@ -50,12 +50,15 @@ exceedingLoad = []
 listPhynet = []
 #1)generate a physical topology
 phyNet = Graph.Erdos_Renyi(numberOfPhyNodes, 0.5)
-    
+
+
+phyNet.es["nvlinks"] = 0
+
 for i in numberOfVirtualNodes: 
     #phyNet = fixed.generate()
     numberOfPhyNodes = phyNet.vcount()
     phyNet.vs["name"] = range(0,numberOfPhyNodes)
-    #phyNet.es["nvlinks"] = 0
+    
     #plot(phyNet, edge_label=phyNet.es["nvlinks"])
     
     for numberOfCreatedVNets in range(0,numberOfVirtualNetsToBeCreated):
@@ -65,9 +68,7 @@ for i in numberOfVirtualNodes:
         subPhyNet = shpalg.create(phyNet,listOfNodes)
         phyNet = allocate(subPhyNet,phyNet)
         listPhynet.append(phyNet)
-
     for j in listPhynet:
-        print "aqui"
         phyNet = deallocate(j,phyNet) ## modifiquei essa linha e coloquei a phyNet recebendo a funcao
         #testando o conteudo da lista.
                
