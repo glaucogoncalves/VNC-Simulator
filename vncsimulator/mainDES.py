@@ -76,7 +76,7 @@ for Sd in range(1):
     tmedf.append(float(result[3]))
     #print "Total de atendimentos=",result[4]
 
-print "Relatorio"
+print "Report"
 print "Mean Lifetime",(sum(o) / float(len(o)))
 print "Physical Network Ocupation",(sum(ta) / float(len(ta)))
 print "Number of Virtual Networks created",(sum(tmedf) / float(len(tmedf)))
