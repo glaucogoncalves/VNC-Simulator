@@ -3,7 +3,6 @@
 ##########
 from igraph import *
 from random import *
-import csv
 
 
 from algorithms import shpalg
@@ -47,16 +46,16 @@ minimumLoadLinks = []
 unusedLinks = []
 optimisticMeanLoadLinks = []
 exceedingLoad = []
-listPhynet = []
+
 #1)generate a physical topology
 phyNet = Graph.Erdos_Renyi(numberOfPhyNodes, 0.5)
-
+#phyNet = fixed.generate()
+numberOfPhyNodes = phyNet.vcount()
 
 phyNet.es["nvlinks"] = 0
 
 for i in numberOfVirtualNodes: 
-    #phyNet = fixed.generate()
-    numberOfPhyNodes = phyNet.vcount()
+    listPhynet = []
     phyNet.vs["name"] = range(0,numberOfPhyNodes)
     
     #plot(phyNet, edge_label=phyNet.es["nvlinks"])
@@ -67,12 +66,9 @@ for i in numberOfVirtualNodes:
         #3)try to create a network connecting the nodes (the algorithm goes here)
         subPhyNet = shpalg.create(phyNet,listOfNodes)
         phyNet = allocate(subPhyNet,phyNet)
-        listPhynet.append(phyNet)
-    for j in listPhynet:
-        phyNet = deallocate(j,phyNet) ## modifiquei essa linha e coloquei a phyNet recebendo a funcao
-        #testando o conteudo da lista.
+        listPhynet.append(subPhyNet)
                
-#4)Compute the metrics
+    #4)Compute the metrics
     #Mean load of physical links
     meanLoadLinks.append(round(sum(phyNet.es["nvlinks"])/float(phyNet.ecount()),3))
     #Maximum load of physical links
@@ -82,6 +78,9 @@ for i in numberOfVirtualNodes:
     #Number of links not used
     soma = sum([1 for i in phyNet.get_edgelist() if phyNet.es[phyNet.get_eid(i[0],i[1])]["nvlinks"] == 0 ])
     unusedLinks.append((soma/float(phyNet.ecount()))*100)
+    
+    for j in listPhynet:
+        phyNet = deallocate(j,phyNet) ## modifiquei essa linha e coloquei a phyNet recebendo a funcao
     
 print (meanLoadLinks)
 for i in numberOfVirtualNodes:
@@ -103,13 +102,13 @@ plt.close('all')
 # Four axes, returned as a 2-d arrayaxarr[0, 0].plot(numberOfVirtualNodes, meanLoadLinks)
 f, axarr = plt.subplots(2, 2)
 axarr[0, 0].plot(numberOfVirtualNodes, meanLoadLinks)
-axarr[0, 0].set_title('Experiment 05/2014 - Mean load of a link')
+axarr[0, 0].set_title('Experiment Sim01/abril - Mean load of a link')
 axarr[0, 1].plot(numberOfVirtualNodes, maximumLoadLinks)
-axarr[0, 1].set_title('Experiment 05/2014 - Maximum load of a link')
+axarr[0, 1].set_title('Experiment Sim01/abril - Maximum load of a link')
 axarr[1, 0].plot(numberOfVirtualNodes, minimumLoadLinks)
-axarr[1, 0].set_title('Experiment 05/2014 - Minimum load of a link')
+axarr[1, 0].set_title('Experiment Sim01/abril - Minimum load of a link')
 axarr[1, 1].plot(numberOfVirtualNodes, unusedLinks)
-axarr[1, 1].set_title('Experiment 05/2014 - Number of links not used')
+axarr[1, 1].set_title('Experiment Sim01/abril - Number of links not used')
 # Fine-tune figure; hide x ticks for top plots and y ticks for right plots
 #plt.setp([a.get_xticklabels() for a in axarr[0, :]], visible=False)
 #plt.setp([a.get_yticklabels() for a in axarr[:, 1]], visible=False)
@@ -126,7 +125,7 @@ while i < len(numberOfVirtualNodes)-1:
     aux = aux+ str(numberOfVirtualNodes[i])+'\t'+str(meanLoadLinks[i])+'\t''\t'+str(maximumLoadLinks[i])+ '\t''\t'+str(minimumLoadLinks[i])+'\t''\t'+str(unusedLinks[i])+'\n'
     i = i+1
 
-print aux
+#print aux
 fileExp.writelines(aux)
 fileExp.close()
 
