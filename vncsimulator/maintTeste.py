@@ -18,7 +18,7 @@ def allocate(subPhyNet,phyNet):
         phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] = phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] + 1
     return phyNet
 
-def deallocate(subPhyNet,phyNet1):
+def deallocate(subPhyNet,phyNet):
     usedEdges = [(subPhyNet.vs[i[0]]["name"],subPhyNet.vs[i[1]]["name"]) for i in subPhyNet.get_edgelist()]
     for e in usedEdges:
         phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] = phyNet.es[phyNet.get_eid(e[0],e[1])]["nvlinks"] -1
