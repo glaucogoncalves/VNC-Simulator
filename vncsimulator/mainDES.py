@@ -2,6 +2,7 @@ import simpy
 from random import expovariate, seed, sample
 import main
 from igraph import *
+from algorithms import shpalg
 
 ## Model components ------------------------
 class Source(object):
@@ -32,15 +33,19 @@ class VirtualNetwork(object):
         global phyNet
         #create the virtual network
         #allocate the virtual network
-        phyNet = phyNet + len(self.nodes)
+        #phyNet = phyNet + len(self.nodes)
         ########## allocate(phyNet) ################################
+        subPhyNet = shpalg.create(phyNet,listOfNodes)
+        phyNet = allocate(subPhyNet,phyNet)
+		
         lf = expovariate(1.0/meanLifeVNTime) #generate the VN lifetime
         M[0].append(lf)
         M[1].append(phyNet)
         yield self.env.timeout(lf)
         #remove the virtual network
-        phyNet = phyNet - len(self.nodes)
+        #phyNet = phyNet - len(self.nodes)
         ########### deallocate(phyNet) ###############################
+        phyNet = deallocate(subPhyNet,phyNet)
         M[1].append(phyNet)
         print("VN died",str(self.env.now))
  
@@ -49,9 +54,9 @@ def model():
     #generate physical network
     global phyNet
     #######seed(1224)
-    #######numberOfPhyNodes = 50
-    ####### phyNet = Graph.Erdos_Renyi(numberOfPhyNodes, 0.5)
-    phyNet = 0
+    numberOfPhyNodes = 50
+    phyNet = Graph.Erdos_Renyi(numberOfPhyNodes, 0.5)
+    #phyNet = 0
     #initialize monitors  
     lfM = [] #Monitors the lifetime
     pNM = [] #Monitors phyNet
