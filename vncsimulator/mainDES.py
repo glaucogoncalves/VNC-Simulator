@@ -35,8 +35,11 @@ class VirtualNetwork(object):
         #allocate the virtual network
         #phyNet = phyNet + len(self.nodes)
         ########## allocate(phyNet) ################################
+
+        ## coloquei 15 a nivel de teste
+        listOfNodes=sample(range(0,phyNet.vcount()),15)
         subPhyNet = shpalg.create(phyNet,listOfNodes)
-        phyNet = allocate(subPhyNet,phyNet)
+        phyNet = main.allocate(subPhyNet,phyNet)
 		
         lf = expovariate(1.0/meanLifeVNTime) #generate the VN lifetime
         M[0].append(lf)
@@ -45,7 +48,7 @@ class VirtualNetwork(object):
         #remove the virtual network
         #phyNet = phyNet - len(self.nodes)
         ########### deallocate(phyNet) ###############################
-        phyNet = deallocate(subPhyNet,phyNet)
+        phyNet = main.deallocate(subPhyNet,phyNet)
         M[1].append(phyNet)
         print("VN died",str(self.env.now))
  
