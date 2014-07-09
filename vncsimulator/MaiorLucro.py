@@ -35,15 +35,16 @@ vars = LpVariable.dicts("Route",(conjuntos,Vars),0,None,LpInteger)
 ##### The objective function is added to 'prob' first
 prob += lpSum([vars[w][b]*costs[w][b] for (w,b) in Routes]), "Soma_das_Vars"
 
+for w in conjuntos:
+    for b in Vars:
+        #####  prob += lpSum([vars[w][c] for c in Vars])*lpSum([vars[d][b] for d in conjuntos])<=demand[b], "Capacidade"%w
+        prob += lpSum([vars[w][c] for c in Vars])
+        prob *= lpSum([vars[d][b] for d in conjuntos])<=demand[b], "Capacidade"%w
+
+
 ##### The supply maximum constraints are added to prob for each supply node
 for w in conjuntos:
     prob += lpSum([vars[w][b] for b in Vars])<= 1, "Maquina virtual"%w
-
-# The demand minimum constraints are added to prob for each demand node
-for b in Vars:
-    prob += lpSum([vars[w][b] for w in conjuntos])>=demand[b], "Soma_das_Vars"%b
-                   
-
 
 # The problem data is written to an .lp file
 prob.writeLP("Maior Lucro.lp")
