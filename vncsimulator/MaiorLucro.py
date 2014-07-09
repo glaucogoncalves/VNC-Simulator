@@ -2,46 +2,46 @@ from pulp import *
 
 conjuntos = ["vm", "cap"]
 
-supply = {"vm": 1000,
-          "cap": 4000}
+supply = {"vm": 100,
+          "cap": 200}
 
-Bars = ["x1", "x2", "x3", "x4", "x5"]
+Vars = ["x1", "x2", "x3", "x4", "x5"]
 
-demand = {"x1":500,
-          "x2":900,
-          "x3":1800,
-          "x4":200,
-          "x5":700,}
+demand = {"x1":0,
+          "x2":1,
+          "x3":1,
+          "x4":0,
+          "x5":1,}
 
-costs = [   #Bars
+costs = [   #Vars
          #1 2 3 4 5
-         [2,4,5,2,1],#A   conjuntos
-         [3,1,3,2,3] #B
+         [1,1,0,1,0],#A   conjuntos
+         [0,0,0,0,0,1] #B
          ]
 
 # The cost data is made into a dictionary
-costs = makeDict([conjuntos,Bars],costs,0)
+costs = makeDict([conjuntos,Vars],costs,0)
 
 # Creates the 'prob' variable to contain the problem data
 prob = LpProblem("Maior Lucro",LpMaximize)
 
-# Creates a list of tuples containing all the possible routes for transport
-Routes = [(w,b) for w in conjuntos for b in Bars]
+# Creates a list of tuples containing all the possible 
+Routes = [(w,b) for w in conjuntos for b in Vars]
 
-# A dictionary called 'Vars' is created to contain the referenced variables(the routes)
-vars = LpVariable.dicts("Route",(conjuntos,Bars),0,None,LpInteger)
+# A dictionary called 'Vars' is created to contain the referenced variables
+vars = LpVariable.dicts("Route",(conjuntos,Vars),0,None,LpInteger)
 
 
 ##### The objective function is added to 'prob' first
-#prob += lpSum([vars[w][b]*costs[w][b] for (w,b) in Routes]), "Sum_of_Transporting_Costs"
+prob += lpSum([vars[w][b]*costs[w][b] for (w,b) in Routes]), "Soma_das_Vars"
 
-##### The supply maximum constraints are added to prob for each supply node (warehouse)
-#for w in conjuntos:
-   # prob += lpSum([vars[w][b] for b in Bars])<=supply[w], "Sum_of_Products_out_of_Warehouse_%s"%w
+##### The supply maximum constraints are added to prob for each supply node
+for w in conjuntos:
+    prob += lpSum([vars[w][b] for b in Vars])<= 1, "Maquina virtual"%w
 
-# The demand minimum constraints are added to prob for each demand node (bar)
-#for b in Bars:
-    #prob += lpSum([vars[w][b] for w in conjuntos])>=demand[b], "Sum_of_Products_into_Bar%s"%b
+# The demand minimum constraints are added to prob for each demand node
+for b in Vars:
+    prob += lpSum([vars[w][b] for w in conjuntos])>=demand[b], "Soma_das_Vars"%b
                    
 
 
