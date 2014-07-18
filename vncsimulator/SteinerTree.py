@@ -6,10 +6,10 @@ Authors: Felipe Fernandes, Dr Glauco Goncalves 2014
 from random import randint
 from igraph import *
 from pulp import *
-from topo import fixed
+from topo import fixed2
 from random import sample
 
-G = fixed.generate()
+G = fixed2.generate()
 G.es["nvlinks"] = 1
 
 #vms = [ "vm%s"%i for i in range(1,V+1) ]
