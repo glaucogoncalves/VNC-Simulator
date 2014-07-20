@@ -85,11 +85,11 @@ for e in A:
             if s != t:
                 prob += lpSum([varsF[s][e],varsF[t]["e("+j+", "+i+")"]])<=varsX[e], "No_Contraditory_Flows_from_"+str(s)+"_and_from_"+str(t)+"_over_"+str(e)
 
-prob += varsX["e(1, 2)"] == 1
-prob += varsX["e(1, 3)"] == 1
-prob += varsF["n1"]["e(1, 3)"] == 1
-prob += varsF["n2"]["e(2, 1)"] == 1
-prob += varsF["n2"]["e(1, 3)"] == 1
+#prob += varsX["e(1, 2)"] == 1
+#prob += varsX["e(1, 3)"] == 1
+#prob += varsF["n1"]["e(1, 3)"] == 1
+#prob += varsF["n2"]["e(2, 1)"] == 1
+#prob += varsF["n2"]["e(1, 3)"] == 1
 
 
 # The problem data is written to an .lp file
