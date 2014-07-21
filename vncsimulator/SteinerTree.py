@@ -6,17 +6,19 @@ Authors: Felipe Fernandes, Dr Glauco Goncalves 2014
 from random import randint
 from igraph import *
 from pulp import *
-from topo import fixed2
+from topo import fixed
 from random import sample
 
-G = fixed2.generate()
+G = fixed.generate()
 G.es["nvlinks"] = 1
+
+print(G)
 
 #vms = [ "vm%s"%i for i in range(1,V+1) ]
 #servers = [ "s%s"%i for i in range(1,M+1) ]
 N = ["n%s"%i for i in range(0,G.vcount())]
 A = ["e"+str(i) for i in G.get_edgelist()]
-T = ["n1","n2","n3"]
+T = ["n2","n6","n8"]
 c = dict(zip(A,G.es["nvlinks"]))
 
 Aquote = [] # the set A'
@@ -72,7 +74,7 @@ for i in N:
         elif i == r:
             termo1 = [varsF[t][edge] for edge in deltaplus[i]]
             termo2 = [-1*varsF[t][edge] for edge in deltaminus[i]]
-            prob += lpSum(termo1+termo2)==-len(Tquote), "Sum_of_Flow_"+str(t)+"_on_node_"+str(i)
+            prob += lpSum(termo1+termo2)==-1, "Sum_of_Flow_"+str(t)+"_on_node_"+str(i)
         else:
             termo1 = [varsF[t][edge] for edge in deltaplus[i]]
             termo2 = [-1*varsF[t][edge] for edge in deltaminus[i]]
