@@ -1,7 +1,7 @@
 from igraph import *
 import itertools
 
-def shplist(phyNet,head,tail):
+def optimal(phyNet,head,tail):
 	if tail == []:
 		return []
 	else:
