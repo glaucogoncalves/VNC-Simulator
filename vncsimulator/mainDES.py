@@ -98,21 +98,28 @@ theSeed = 393939
 
 ## Experiment/Result  ----------------------------------
 
-mLL=[]
-maxLL=[]
-minLL=[]
-nUnL=[]
-seed(theSeed)
-for Sd in range(10):
-    result = model()
-    mLL.append(float(result[0]))
-    maxLL.append(float(result[1]))
-    minLL.append(float(result[2]))
-    nUnL.append(float(result[3]))
-    print Sd
+algorithm = input(' 1 executa o algoritmo shpalg, se for 2 executa o algoritmo optimal: ')
 
-print "Report"
-print "Mean load of physical links",(sum(mLL) / float(len(mLL)))
-print "Maximum load of physical links",(sum(maxLL) / float(len(maxLL)))
-print "Minimum load of physical links",(sum(minLL) / float(len(minLL)))
-print "Percentage of unused links",(sum(nUnL) / float(len(nUnL)))
+if algorithm == 1:
+
+    mLL=[]
+    maxLL=[]
+    minLL=[]
+    nUnL=[]
+    seed(theSeed)
+    for Sd in range(3):
+        result = model()
+        mLL.append(float(result[0]))
+        maxLL.append(float(result[1]))
+        minLL.append(float(result[2]))
+        nUnL.append(float(result[3]))
+        print Sd
+
+    print "Report"
+    print "Mean load of physical links",(sum(mLL) / float(len(mLL)))
+    print "Maximum load of physical links",(sum(maxLL) / float(len(maxLL)))
+    print "Minimum load of physical links",(sum(minLL) / float(len(minLL)))
+    print "Percentage of unused links",(sum(nUnL) / float(len(nUnL)))
+
+if algorithm == 2:
+    from SteinerTree import *
