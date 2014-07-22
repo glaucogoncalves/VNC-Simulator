@@ -8,6 +8,7 @@ from igraph import *
 from pulp import *
 from topo import fixed
 from random import sample
+from algorithms import optimal
 
 G = fixed.generate()
 G.es["nvlinks"] = 1
