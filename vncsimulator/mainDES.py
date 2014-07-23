@@ -42,9 +42,14 @@ class VirtualNetwork(object):
     def arrival(self,M):
         #print("VN arrived",str(self.env.now))
         global phyNet
-        #create the virtual network
-        subPhyNet = shpalg.create(phyNet,self.nodes)
-        #allocate the virtual network
+        #create the virtual 
+		algorithm = input(' 1 executa o algoritmo shpalg, se for 2 executa o algoritmo optimal: ')
+		if algorithm == 1:
+			subPhyNet = shpalg.create(phyNet,self.nodes)
+        if algorithm == 2:
+			subPhyNet = optimal.create(phyNet,self.nodes)
+        
+		#allocate the virtual network
         phyNet = allocate(subPhyNet,phyNet)
 
         lf = expovariate(1.0/meanLifeVNTime) #generate the VN lifetime
