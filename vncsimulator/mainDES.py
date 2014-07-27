@@ -2,6 +2,7 @@ import simpy
 from random import expovariate, seed, sample, randint
 from igraph import *
 from algorithms import shpalg
+from algorithms import optimal
 
 def allocate(subPhyNet,phyNet):
     usedEdges = [(subPhyNet.vs[i[0]]["name"],subPhyNet.vs[i[1]]["name"]) for i in subPhyNet.get_edgelist()]
@@ -42,12 +43,11 @@ class VirtualNetwork(object):
     def arrival(self,M):
         #print("VN arrived",str(self.env.now))
         global phyNet
-        #create the virtual 
-		algorithm = input(' 1 executa o algoritmo shpalg, se for 2 executa o algoritmo optimal: ')
-		if algorithm == 1:
-			subPhyNet = shpalg.create(phyNet,self.nodes)
+        #create the virtual
+        if algorithm == 1:
+            subPhyNet = shpalg.create(phyNet,self.nodes)
         if algorithm == 2:
-			subPhyNet = optimal.create(phyNet,self.nodes)
+            subPhyNet = optimal.create(phyNet,self.nodes)
         
 		#allocate the virtual network
         phyNet = allocate(subPhyNet,phyNet)
@@ -103,28 +103,24 @@ theSeed = 393939
 
 ## Experiment/Result  ----------------------------------
 
-algorithm = input(' 1 executa o algoritmo shpalg, se for 2 executa o algoritmo optimal: ')
+algorithm = input("1 executa o algoritmo shpalg, se for 2 executa o algoritmo optimal: ")
 
-if algorithm == 1:
+mLL=[]
+maxLL=[]
+minLL=[]
+nUnL=[]
+seed(theSeed)
+for Sd in range(3):
+    result = model()
+    mLL.append(float(result[0]))
+    maxLL.append(float(result[1]))
+    minLL.append(float(result[2]))
+    nUnL.append(float(result[3]))
+    print Sd
 
-    mLL=[]
-    maxLL=[]
-    minLL=[]
-    nUnL=[]
-    seed(theSeed)
-    for Sd in range(3):
-        result = model()
-        mLL.append(float(result[0]))
-        maxLL.append(float(result[1]))
-        minLL.append(float(result[2]))
-        nUnL.append(float(result[3]))
-        print Sd
+print "Report"
+print "Mean load of physical links",(sum(mLL) / float(len(mLL)))
+print "Maximum load of physical links",(sum(maxLL) / float(len(maxLL)))
+print "Minimum load of physical links",(sum(minLL) / float(len(minLL)))
+print "Percentage of unused links",(sum(nUnL) / float(len(nUnL)))
 
-    print "Report"
-    print "Mean load of physical links",(sum(mLL) / float(len(mLL)))
-    print "Maximum load of physical links",(sum(maxLL) / float(len(maxLL)))
-    print "Minimum load of physical links",(sum(minLL) / float(len(minLL)))
-    print "Percentage of unused links",(sum(nUnL) / float(len(nUnL)))
-
-if algorithm == 2:
-    from SteinerTree import *

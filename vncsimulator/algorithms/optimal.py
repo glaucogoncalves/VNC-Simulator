@@ -1,5 +1,9 @@
 from igraph import *
 import itertools
+from random import randint
+from igraph import *
+from pulp import *
+from random import sample
 
 def optimal(phyNet,head,tail):
 	if tail == []:
@@ -12,13 +16,6 @@ def optimal(phyNet,head,tail):
 
 def create(phyNet,Vnodes):
 	
-        from random import randint
-        from igraph import *
-        from pulp import *
-        from topo import fixed
-        from random import sample
-        from algorithms import optimal
-
         G = phyNet
         G.es["nvlinks"] = 1
 
@@ -30,10 +27,6 @@ def create(phyNet,Vnodes):
         A = ["e"+str(i) for i in G.get_edgelist()]
         T = ["n"+str(i) for i in Vnodes]
         c = dict(zip(A,G.es["nvlinks"]))
-
-        listAuxiliar[]
-        for i in Vnodes
-             listAuxiliar.append("x"+str(i))   
 
         Aquote = [] # the set A'
         for (i,j) in G.get_edgelist():
