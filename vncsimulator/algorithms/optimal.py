@@ -1,37 +1,22 @@
 from igraph import *
-import itertools
-from random import randint
-from igraph import *
 from pulp import *
-from random import sample
-
-def optimal(phyNet,head,tail):
-	if tail == []:
-		return []
-	else:
-		ret = []
-		ret = phyNet.get_shortest_paths(head,tail,output="epath")
-		ret.extend(shplist(phyNet, tail.pop(), tail))
-		return ret
 
 def create(phyNet,Vnodes):
-	
         G = phyNet
         G.es["nvlinks"] = 1
 
-        print(G)
+        #print(G)
 
         #vms = [ "vm%s"%i for i in range(1,V+1) ]
         #servers = [ "s%s"%i for i in range(1,M+1) ]
         N = ["n%s"%i for i in range(0,G.vcount())]
-        A = ["e"+str(i) for i in G.get_edgelist()]
+        A = ["e"+str(i).replace(" ", "") for i in G.get_edgelist()]
         T = ["n"+str(i) for i in Vnodes]
         c = dict(zip(A,G.es["nvlinks"]))
 
         Aquote = [] # the set A'
         for (i,j) in G.get_edgelist():
-            Aquote.extend(["e"+str((i,j)),"e"+str((j,i))])
-
+            Aquote.extend(["e"+str((i,j)).replace(" ", ""),"e"+str((j,i)).replace(" ", "")])
 
         caux = [] #c' vector
         for i in G.es["nvlinks"]:
@@ -88,11 +73,11 @@ def create(phyNet,Vnodes):
                     prob += lpSum(termo1+termo2)==0, "Sum_of_Flow_"+str(t)+"_on_node_"+str(i)    
 
         for e in A:
-            i,j = e.replace("e(","").replace(")","").replace(" ","").rsplit(",")
+            i,j = e.replace("e(","").replace(")","").rsplit(",")
             for s in Tquote:
                 for t in Tquote:
                     if s != t:
-                        prob += lpSum([varsF[s][e],varsF[t]["e("+j+", "+i+")"]])<=varsX[e], "No_Contraditory_Flows_from_"+str(s)+"_and_from_"+str(t)+"_over_"+str(e)
+                        prob += lpSum([varsF[s][e],varsF[t]["e("+j+","+i+")"]])<=varsX[e], "No_Contraditory_Flows_from_"+str(s)+"_and_from_"+str(t)+"_over_"+str(e)
 
         #prob += varsX["e(1, 2)"] == 1
         #prob += varsX["e(1, 3)"] == 1

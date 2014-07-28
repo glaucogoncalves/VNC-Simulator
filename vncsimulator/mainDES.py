@@ -43,6 +43,7 @@ class VirtualNetwork(object):
     def arrival(self,M):
         #print("VN arrived",str(self.env.now))
         global phyNet
+        global algorithm
         #create the virtual
         if algorithm == 1:
             subPhyNet = shpalg.create(phyNet,self.nodes)
@@ -100,17 +101,15 @@ simDuration = 2000.0  # time to stop simulation (minutes)
 meanTimeBtwVNArrivals = 0.2   # mean time between arrivals of virtual networks (minutes)
 meanLifeVNTime = 100.0     # mean lifetime of virtual networks (minutes)
 theSeed = 393939
-
+algorithm = 2 #Use 1 for shpalg and 2 for optimal  
 ## Experiment/Result  ----------------------------------
-
-algorithm = input("1 executa o algoritmo shpalg, se for 2 executa o algoritmo optimal: ")
 
 mLL=[]
 maxLL=[]
 minLL=[]
 nUnL=[]
 seed(theSeed)
-for Sd in range(3):
+for Sd in range(1):
     result = model()
     mLL.append(float(result[0]))
     maxLL.append(float(result[1]))
@@ -123,4 +122,3 @@ print "Mean load of physical links",(sum(mLL) / float(len(mLL)))
 print "Maximum load of physical links",(sum(maxLL) / float(len(maxLL)))
 print "Minimum load of physical links",(sum(minLL) / float(len(minLL)))
 print "Percentage of unused links",(sum(nUnL) / float(len(nUnL)))
-
