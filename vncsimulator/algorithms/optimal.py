@@ -12,16 +12,17 @@ def create(phyNet,Vnodes):
         N = ["n%s"%i for i in range(0,G.vcount())]
         A = ["e"+str(i).replace(" ", "") for i in G.get_edgelist()]
         T = ["n"+str(i) for i in Vnodes]
-        c = dict(zip(A,G.es["nvlinks"]))
+        c = dict(zip(A,G.es["nvlinks"]))      
 
         Aquote = [] # the set A'
         for (i,j) in G.get_edgelist():
             Aquote.extend(["e"+str((i,j)).replace(" ", ""),"e"+str((j,i)).replace(" ", "")])
-
+                
         caux = [] #c' vector
         for i in G.es["nvlinks"]:
             caux.extend([i,i])
         cquote = dict(zip(Aquote,caux))
+        
 
         deltaplus = {}
         for i in N:
@@ -30,7 +31,7 @@ def create(phyNet,Vnodes):
                 if e.find("e("+i[1:]) != -1:
                     laux.extend([e])
             deltaplus[i]=laux
-
+                
         deltaminus = {}
         for i in N:
             laux = []
@@ -38,9 +39,10 @@ def create(phyNet,Vnodes):
                 if e.find(", "+i[1:]+")") != -1:
                     laux.extend([e])
             deltaminus[i]=laux
-            
+                    
         r = T[-1]
         Tquote = T[0:-1]
+        
             
         # Creates the 'prob' variable to contain the problem data
         prob = LpProblem("Minimum Cost Steiner Tree",LpMinimize)
@@ -56,7 +58,7 @@ def create(phyNet,Vnodes):
         ##### The objective function is added to 'prob' first
         #prob += lpSum([cquote[e]*varsX[e] for e in Aquote]), "Sum of edge costs"
         prob += lpSum([c[e]*varsX[e] for e in A]), "Sum of edge costs"
-
+        
         for i in N:
             for t in Tquote:
                 if i == t:
@@ -96,8 +98,18 @@ def create(phyNet,Vnodes):
         print "Status:", LpStatus[prob.status]
 
         # Each of the variables is printed with it's resolved optimum value
+        listAux = []
         for v in prob.variables():
-            print v.name, "=", v.varValue
+            #print v.name, "=", v.varValue
+            if v.varValue == 1:
+                listAux.append(v.name);    
+
+        listAux2 = []
+        for i in listAux:
+            teste = (i).replace("x_e(", "")
+            teste2 = (teste).replace(")", "")  
+            listAux2.append(teste2); 
+        print(listAux2)
 
         # The optimised objective function value is printed to the screen    
         print "Steiner cost = ", value(prob.objective)
