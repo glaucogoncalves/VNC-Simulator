@@ -101,16 +101,17 @@ def create(phyNet,Vnodes):
         listAux = []
         for v in prob.variables():
             #print v.name, "=", v.varValue
-            if v.varValue == 1:
+            if v.name[0] == "x" and v.varValue > 0:
                 listAux.append(v.name);    
 
         listAux2 = []
         for i in listAux:
-            teste = (i).replace("x_e(", "")
-            teste2 = (teste).replace(")", "")  
-            listAux2.append(teste2); 
+            RetirandoX = (i).replace("x_e(", "")
+            RetirandoR = (RetirandoX).replace(")", "")  
+            listAux2.append(RetirandoR ); 
         print(listAux2)
-
+        teste5 = G.get_eids(listAux2)
+        print(teste5)
         # The optimised objective function value is printed to the screen    
         print "Steiner cost = ", value(prob.objective)
 
