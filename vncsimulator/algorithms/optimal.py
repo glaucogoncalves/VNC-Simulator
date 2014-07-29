@@ -110,15 +110,14 @@ def create(phyNet,Vnodes):
             RetirandoR = (RetirandoX).replace(")", "")  
             listAux2.append(RetirandoR); 
 
-        listAux3 = []
-        listAux4 = []
+        c = []
         for i in listAux2:
-            listAux3.append(int(i.split(",")[0]))
-            listAux3.append(int(i.split(",")[1]))
-            listAux4.append(listAux3)
-            listAux3 = []
-        for i in listAux4:
-            phynet = G.get_eids(i)
+            a = (int(i.split(",")[0]))
+            b = (int(i.split(",")[1]))
+            c += [(a,b)]
+        for i in c:
+            phynet = G.get_edgelist(c)
+        print(phynet)
         return phynet
         # The optimised objective function value is printed to the screen    
         print "Steiner cost = ", value(prob.objective)
