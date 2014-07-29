@@ -111,14 +111,17 @@ def create(phyNet,Vnodes):
             listAux2.append(RetirandoR); 
 
         c = []
+        lst_phynet = []
         for i in listAux2:
             a = (int(i.split(",")[0]))
             b = (int(i.split(",")[1]))
             c += [(a,b)]
-        for i in c:
-            phynet = G.get_edgelist(c)
-        print(phynet)
-        return phynet
+            z = G.get_eid(a,b)
+
+            lst_phynet.append(int(z))
+        phyNetaux = phyNet.subgraph_edges(lst_phynet)
+            
+        return phyNetaux
         # The optimised objective function value is printed to the screen    
         print "Steiner cost = ", value(prob.objective)
 
