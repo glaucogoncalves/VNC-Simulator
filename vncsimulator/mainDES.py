@@ -3,6 +3,7 @@ from random import expovariate, seed, sample, randint
 from igraph import *
 from algorithms import shpalg
 from algorithms import optimal
+from topo import fixed
 
 def allocate(subPhyNet,phyNet):
     usedEdges = [(subPhyNet.vs[i[0]]["name"],subPhyNet.vs[i[1]]["name"]) for i in subPhyNet.get_edgelist()]
@@ -41,7 +42,7 @@ class VirtualNetwork(object):
     
     """ Virtual Network arrives, is allocated and leaves """           
     def arrival(self,M):
-        #print("VN arrived",str(self.env.now))
+        print("VN arrived",str(self.env.now))
         global phyNet
         global algorithm
         #create the virtual
@@ -50,7 +51,7 @@ class VirtualNetwork(object):
         if algorithm == 2:
             subPhyNet = optimal.create(phyNet,self.nodes)
         
-		#allocate the virtual network
+        #allocate the virtual network
         phyNet = allocate(subPhyNet,phyNet)
 
         lf = expovariate(1.0/meanLifeVNTime) #generate the VN lifetime
@@ -81,6 +82,7 @@ def model():
     global phyNet
     numberOfPhyNodes = 50
     phyNet = Graph.Erdos_Renyi(numberOfPhyNodes, 0.5)
+    #phyNet = fixed.generate()
     phyNet.es["nvlinks"] = 0
     phyNet.vs["name"] = range(0,numberOfPhyNodes)
     #phyNet = 0
@@ -115,7 +117,6 @@ for Sd in range(1):
     maxLL.append(float(result[1]))
     minLL.append(float(result[2]))
     nUnL.append(float(result[3]))
-    print Sd
 
 print "Report"
 print "Mean load of physical links",(sum(mLL) / float(len(mLL)))

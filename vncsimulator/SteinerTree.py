@@ -12,19 +12,17 @@ from random import sample
 G = fixed.generate()
 G.es["nvlinks"] = 1
 
-print(G)
-
 #vms = [ "vm%s"%i for i in range(1,V+1) ]
 #servers = [ "s%s"%i for i in range(1,M+1) ]
 N = ["n%s"%i for i in range(0,G.vcount())]
-A = ["e"+str(i) for i in G.get_edgelist()]
-T = ["n2","n6","n8"]
+A = ["e"+str(i).replace(" ", "") for i in G.get_edgelist()]
+#T = ["n2","n6","n8"]
+T = ["n0", "n6"]
 c = dict(zip(A,G.es["nvlinks"]))
 
 Aquote = [] # the set A'
 for (i,j) in G.get_edgelist():
-    Aquote.extend(["e"+str((i,j)),"e"+str((j,i))])
-
+    Aquote.extend(["e"+str((i,j)).replace(" ", ""),"e"+str((j,i)).replace(" ", "")])
 
 caux = [] #c' vector
 for i in G.es["nvlinks"]:
@@ -43,7 +41,7 @@ deltaminus = {}
 for i in N:
     laux = []
     for e in Aquote: 
-        if e.find(", "+i[1:]+")") != -1:
+        if e.find(","+i[1:]+")") != -1:
             laux.extend([e])
     deltaminus[i]=laux
     
@@ -81,18 +79,15 @@ for i in N:
             prob += lpSum(termo1+termo2)==0, "Sum_of_Flow_"+str(t)+"_on_node_"+str(i)    
 
 for e in A:
-    i,j = e.replace("e(","").replace(")","").replace(" ","").rsplit(",")
-    for s in Tquote:
-        for t in Tquote:
-            if s != t:
-                prob += lpSum([varsF[s][e],varsF[t]["e("+j+", "+i+")"]])<=varsX[e], "No_Contraditory_Flows_from_"+str(s)+"_and_from_"+str(t)+"_over_"+str(e)
-
-#prob += varsX["e(1, 2)"] == 1
-#prob += varsX["e(1, 3)"] == 1
-#prob += varsF["n1"]["e(1, 3)"] == 1
-#prob += varsF["n2"]["e(2, 1)"] == 1
-#prob += varsF["n2"]["e(1, 3)"] == 1
-
+    i,j = e.replace("e(","").replace(")","").rsplit(",")
+    if len(Tquote)>1:
+        for s in Tquote:
+            for t in Tquote:
+                if s != t:
+                    prob += lpSum([varsF[s][e],varsF[t]["e("+j+","+i+")"]])<=varsX[e], "No_Contraditory_Flows_from_"+str(s)+"_and_from_"+str(t)+"_over_"+str(e)
+    else:
+        s = Tquote[0]
+        prob += lpSum([varsF[s][e]])<=varsX[e], "There_is_a_flow_from_"+str(s)+"_only_if_"+str(e)+"_is_used"
 
 # The problem data is written to an .lp file
 prob.writeLP("Steiner Tree.lp")

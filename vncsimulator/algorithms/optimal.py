@@ -1,49 +1,56 @@
+import re
 from igraph import *
 from pulp import *
 
+def find_src_node(text, search):
+    result = re.findall('\\b'+'\('+search+','+'\\b', text, flags=re.IGNORECASE)
+    if len(result)>0:
+        return True
+    else:
+        return False
+
+def find_dst_node(text, search):
+    result = re.findall('\\b'+','+search+'\)', text, flags=re.IGNORECASE)
+    if len(result)>0:
+        return True
+    else:
+        return False
+    
 def create(phyNet,Vnodes):
         G = phyNet
-        G.es["nvlinks"] = 1
 
-        #print(G)
+        costs = [i+1 for i in G.es["nvlinks"]]
 
         #vms = [ "vm%s"%i for i in range(1,V+1) ]
         #servers = [ "s%s"%i for i in range(1,M+1) ]
         N = ["n%s"%i for i in range(0,G.vcount())]
         A = ["e"+str(i).replace(" ", "") for i in G.get_edgelist()]
         T = ["n"+str(i) for i in Vnodes]
-        c = dict(zip(A,G.es["nvlinks"]))      
+        c = dict(zip(A,costs))      
 
         Aquote = [] # the set A'
         for (i,j) in G.get_edgelist():
             Aquote.extend(["e"+str((i,j)).replace(" ", ""),"e"+str((j,i)).replace(" ", "")])
-                
-        caux = [] #c' vector
-        for i in G.es["nvlinks"]:
-            caux.extend([i,i])
-        cquote = dict(zip(Aquote,caux))
         
-
         deltaplus = {}
         for i in N:
             laux = []
             for e in Aquote: 
-                if e.find("e("+i[1:]) != -1:
+                if find_src_node(e,i[1:]):
                     laux.extend([e])
             deltaplus[i]=laux
                 
         deltaminus = {}
         for i in N:
             laux = []
-            for e in Aquote: 
-                if e.find(", "+i[1:]+")") != -1:
+            for e in Aquote:
+                if find_dst_node(e,i[1:]):
                     laux.extend([e])
             deltaminus[i]=laux
                     
         r = T[-1]
         Tquote = T[0:-1]
         
-            
         # Creates the 'prob' variable to contain the problem data
         prob = LpProblem("Minimum Cost Steiner Tree",LpMinimize)
 
@@ -54,9 +61,8 @@ def create(phyNet,Vnodes):
         #varsX = LpVariable.dicts("x",Aquote,0,1,LpInteger)
         varsX = LpVariable.dicts("x",A,0,1,LpInteger)
         varsF = LpVariable.dicts("f",(Tquote,Aquote),0,None,LpContinuous)
-
+        
         ##### The objective function is added to 'prob' first
-        #prob += lpSum([cquote[e]*varsX[e] for e in Aquote]), "Sum of edge costs"
         prob += lpSum([c[e]*varsX[e] for e in A]), "Sum of edge costs"
         
         for i in N:
@@ -76,17 +82,15 @@ def create(phyNet,Vnodes):
 
         for e in A:
             i,j = e.replace("e(","").replace(")","").rsplit(",")
-            for s in Tquote:
-                for t in Tquote:
-                    if s != t:
-                        prob += lpSum([varsF[s][e],varsF[t]["e("+j+","+i+")"]])<=varsX[e], "No_Contraditory_Flows_from_"+str(s)+"_and_from_"+str(t)+"_over_"+str(e)
-
-        #prob += varsX["e(1, 2)"] == 1
-        #prob += varsX["e(1, 3)"] == 1
-        #prob += varsF["n1"]["e(1, 3)"] == 1
-        #prob += varsF["n2"]["e(2, 1)"] == 1
-        #prob += varsF["n2"]["e(1, 3)"] == 1
-
+            if len(Tquote)>1:
+                for s in Tquote:
+                    for t in Tquote:
+                        if s != t:
+                            prob += lpSum([varsF[s][e],varsF[t]["e("+j+","+i+")"]])<=varsX[e], "No_Contraditory_Flows_from_"+str(s)+"_and_from_"+str(t)+"_over_"+str(e)
+            else:
+                s = Tquote[0]
+                prob += lpSum([varsF[s][e]])<=varsX[e], "There_is_a_flow_from_"+str(s)+"_only_if_"+str(e)+"_is_used"
+                prob += lpSum([varsF[s]["e("+j+","+i+")"]])<=varsX[e], "There_is_a_flow_from_"+str(s)+"_only_if_"+"e("+j+","+i+")"+"_is_used"
 
         # The problem data is written to an .lp file
         prob.writeLP("Steiner Tree.lp")
@@ -95,15 +99,15 @@ def create(phyNet,Vnodes):
         prob.solve()
 
         # The status of the solution is printed to the screen
-        print "Status:", LpStatus[prob.status]
+        #print "Status:", LpStatus[prob.status]
 
         # Each of the variables is printed with it's resolved optimum value
         listAux = []
         for v in prob.variables():
             #print v.name, "=", v.varValue
             if v.name[0] == "x" and v.varValue > 0:
-                listAux.append(v.name);    
-
+                listAux.append(v.name); 
+        
         listAux2 = []
         for i in listAux:
             RetirandoX = (i).replace("x_e(", "")
@@ -117,11 +121,10 @@ def create(phyNet,Vnodes):
             b = (int(i.split(",")[1]))
             c += [(a,b)]
             z = G.get_eid(a,b)
-
             lst_phynet.append(int(z))
-        phyNetaux = phyNet.subgraph_edges(lst_phynet)
-            
+        
+        phyNetaux = G.subgraph_edges(lst_phynet)
+        
         return phyNetaux
         # The optimised objective function value is printed to the screen    
-        print "Steiner cost = ", value(prob.objective)
-
+        #print "Steiner cost = ", value(prob.objective)
