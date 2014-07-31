@@ -80,7 +80,7 @@ class VirtualNetwork(object):
 def model():                            
     #generate physical network
     global phyNet
-    numberOfPhyNodes = 50
+    numberOfPhyNodes = 30
     phyNet = Graph.Erdos_Renyi(numberOfPhyNodes, 0.5)
     #phyNet = fixed.generate()
     phyNet.es["nvlinks"] = 0
@@ -99,9 +99,9 @@ def model():
     return (sum(mLL)/float(len(mLL)),max(maxLL),min(minLL),nUnL[len(nUnL)-1])
 
 ## Experiment parameters -------------------------------
-simDuration = 2000.0  # time to stop simulation (minutes)
-meanTimeBtwVNArrivals = 0.2   # mean time between arrivals of virtual networks (minutes)
-meanLifeVNTime = 100.0     # mean lifetime of virtual networks (minutes)
+simDuration = 500.0  # time to stop simulation (minutes)
+meanTimeBtwVNArrivals = 1.0   # mean time between arrivals of virtual networks (minutes)
+meanLifeVNTime = 50.0     # mean lifetime of virtual networks (minutes)
 theSeed = 393939
 algorithm = 2 #Use 1 for shpalg and 2 for optimal  
 ## Experiment/Result  ----------------------------------
