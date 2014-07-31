@@ -67,7 +67,7 @@ class VirtualNetwork(object):
         yield self.env.timeout(lf)
         #remove the virtual network
         phyNet = deallocate(subPhyNet,phyNet)
-        
+        del(subPhyNet)
         #Capturing Metrics
         M[0].append(round(sum(phyNet.es["nvlinks"])/float(phyNet.ecount()),3))
         M[1].append(max(phyNet.es["nvlinks"]))
@@ -96,6 +96,9 @@ def model():
     s = Source(env)
     env.process(s.generate(mon=(mLL,maxLL,minLL,nUnL)))         
     env.run(until=simDuration)
+    del(s)
+    del(phyNet)
+    del(env)
     return (sum(mLL)/float(len(mLL)),max(maxLL),min(minLL),nUnL[len(nUnL)-1])
 
 ## Experiment parameters -------------------------------
@@ -111,7 +114,7 @@ maxLL=[]
 minLL=[]
 nUnL=[]
 seed(theSeed)
-for Sd in range(1):
+for Sd in range(10):
     result = model()
     mLL.append(float(result[0]))
     maxLL.append(float(result[1]))

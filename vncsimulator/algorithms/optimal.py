@@ -19,7 +19,8 @@ def find_dst_node(text, search):
 def create(phyNet,Vnodes):
         G = phyNet
 
-        costs = [i+1 for i in G.es["nvlinks"]]
+        #costs = [i+1 for i in G.es["nvlinks"]]
+        costs = [1 for i in G.es["nvlinks"]]
 
         #vms = [ "vm%s"%i for i in range(1,V+1) ]
         #servers = [ "s%s"%i for i in range(1,M+1) ]
@@ -51,7 +52,7 @@ def create(phyNet,Vnodes):
         r = T[-1]
         Tquote = T[0:-1]
         
-        # Creates the 'prob' variable to contain the problem data
+        # Creates the 'prob' variable to contain the problem data 
         prob = LpProblem("Minimum Cost Steiner Tree",LpMinimize)
 
         # Creates a list of tuples containing all the possible 
@@ -93,10 +94,11 @@ def create(phyNet,Vnodes):
                 prob += lpSum([varsF[s]["e("+j+","+i+")"]])<=varsX[e], "There_is_a_flow_from_"+str(s)+"_only_if_"+"e("+j+","+i+")"+"_is_used"
 
         # The problem data is written to an .lp file
-        prob.writeLP("Steiner Tree.lp")
+        #prob.writeLP("Steiner Tree.lp")
 
         # The problem is solved using PuLP's choice of Solver
         prob.solve()
+        
 
         # The status of the solution is printed to the screen
         #print "Status:", LpStatus[prob.status]
@@ -124,7 +126,7 @@ def create(phyNet,Vnodes):
             lst_phynet.append(int(z))
         
         phyNetaux = G.subgraph_edges(lst_phynet)
-        
+        del(prob)
         return phyNetaux
         # The optimised objective function value is printed to the screen    
         #print "Steiner cost = ", value(prob.objective)
